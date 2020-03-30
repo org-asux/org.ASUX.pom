@@ -12,11 +12,14 @@
 	<groupId>org.asux</groupId>
 	<artifactId>TopLevelPOM</artifactId>
 
-	<version>1.1</version>
+	<version>1.2.2</version>
 	<packaging>pom</packaging>
 	<!--  The currently-acceptable core packaging values are: pom, jar, maven-plugin, ejb, war, ear, rar, par -->
 
 	<!-- VERSION HISTORY -->
+	<!-- 1.2.2 Added ANTLR Language parser libraries.  Upgraded org.ASUX.common to 1.2; Added org.ASUX.language.ANTLR4 project -->
+	<!-- 1.2.1 2019-12-06 Added support for JUNIT Jupiter, so maven can be used for running Unit-Tests, which I have been doing solely using Shell-Scripts so far.  Uncommented maven-surefire-plugin -->
+	<!-- 1.2 Now all child-POMs will automatically use the last version of this Parent.  Also, org.ASUX.common upgraded to version 1.2 -->
 	<!-- 1.1 added more AWS-SDK jar-dependencies (for IAM and Rt53). Replaced <name> with <description>, and added new <name> -->
 
 	<inceptionYear>2019</inceptionYear>
@@ -66,6 +69,13 @@
 	<contributors>
 	</contributors>
 
+    <scm>
+		<url>https://github.com/org-asux/org.ASUX.pom.git</url>
+		<connection>scm:git:git@github.com:org-asux/org.ASUX.pom.git</connection>
+		<developerConnection>scm:git:git@github.com:org-asux/org.ASUX.pom.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
         <!-- =========================================================== -->
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
@@ -87,6 +97,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- to prevent mvn warnings about platform specific encodings ... -->
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH.mm.ss</maven.build.timestamp.format>
     </properties>
 
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
@@ -108,12 +119,12 @@
 			<dependency>
 				<groupId>org.asux</groupId>
 				<artifactId>common</artifactId>
-				<version>1.1</version>
+				<version>1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.asux</groupId>
 				<artifactId>yaml</artifactId>
-				<version>1.0</version>
+				<version>1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.asux</groupId>
@@ -131,16 +142,35 @@
 				<version>1.0</version>
 			</dependency>
 			<dependency>
+				<groupId>org.asux</groupId>
+				<artifactId>language.antlr4</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+			<!-- TESTING needs only -->
+			<!-- !!!!!!!!!!!!!! ATTENTION !! Maven's Surefire Plugin is ABSOLUTELY needed to make Junit-Jupiter to work !!!!!!!!!!!!!! -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>5.5.2</version>
+				<scope>test</scope> <!-- TEST SCOPE only -->
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.5.2</version>
+				<scope>test</scope><!-- TEST SCOPE only -->
+			</dependency>
+			<dependency>
 				<groupId>org.junit.vintage</groupId>
 				<artifactId>junit-vintage-engine</artifactId>
-				<version>5.5.1</version>
+				<version>5.5.2</version>
 			</dependency>
-			<!-- <dependency> -->
-				<!-- <groupId>j un it</groupId> -->
-				<!-- <artifactId>j un it</artifactId> -->
-				<!-- <version>4.12</version> -->
-			<!-- </dependency> -->
-			<!-- https://bitbucket.org/asomov/snakeyaml/wiki/Installation -->
+			<!-- !!!!!!!!!!!!!! ATTENTION !! Maven's Surefire Plugin is ABSOLUTELY needed to make Junit-Jupiter to work !!!!!!!!!!!!!! -->
+
+			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+				<!-- https://bitbucket.org/asomov/snakeyaml/wiki/Installation -->
 			<dependency>
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
@@ -170,6 +200,17 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>2.9.9</version>
 			</dependency>
+			<!-- https://tomassetti.me/domain-specific-languages/#textual_languages -->
+			<!-- /htdocs/Manuals/GNU-OSS-FOSS/ANTLR_Mega_Tutorial.pdf -->
+			<!-- https://mvnrepository.com/artifact/org.antlr/antlr4 -->
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4</artifactId>
+				<version>4.7.2</version>
+				<!-- <scope>compile</scope> -->
+			</dependency>
+
+			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
@@ -326,17 +367,24 @@
              *      WARNING: All illegal access operations will be denied in a future release
             -  Keep in mind that later you probably also have to pass the - -illegal-access=permit parameter when starting your application.
             -->
-<!--
+			<!-- !!!!!!!!!!!!!! ATTENTION !! This is ABSOLUTELY needed to make Junit-Jupiter to work -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
                     <argLine>
-                        - -illegal-access=permit
+                        --illegal-access=permit
                     </argLine>
+					<properties>
+						<configurationParameters>
+							junit.jupiter.execution.order.random.seed=9832349
+							<!-- I need a way to put in something more random here, without butchering timestamp for this purpose -->
+						</configurationParameters>
+					</properties>
                 </configuration>
             </plugin>
+<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
