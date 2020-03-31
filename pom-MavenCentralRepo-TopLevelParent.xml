@@ -394,17 +394,22 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
-                <configuration>
-                    <argLine>
-                        --illegal-access=permit
-                    </argLine>
+				<configuration>
+					<!-- ================================================== -->
+					<!-- Sometimes REMOVING __ALL__ these lines.. may prevent the following error when this plugin gets invoked -->
+					<!-- org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
+					<!--	<forkCount>5</forkCount>		                	-->
+					<!--	<reuseForks>true</reuseForks>						-->
+					<!--	<argLine>&#45;&#45;illegal-access=permit  -Xmx1024m   -XX:MaxPermSize=256m</argLine>	-->
+					<!--	<useSystemClassLoader>true</useSystemClassLoader>	-->
+					<!--	<useManifestOnlyJar>false</useManifestOnlyJar>		-->
+					<!-- ================================================== -->
+
 					<properties>
-						<configurationParameters>
-							junit.jupiter.execution.order.random.seed=9832349
-							<!-- I need a way to put in something more random here, without butchering timestamp for this purpose -->
-						</configurationParameters>
+						<configurationParameters>junit.jupiter.execution.order.random.seed=9832349</configurationParameters>
+						<!-- I need a way to put in something more random here, without butchering timestamp for this purpose -->
 					</properties>
-                </configuration>
+				</configuration>
             </plugin>
 <!--
             <plugin>
