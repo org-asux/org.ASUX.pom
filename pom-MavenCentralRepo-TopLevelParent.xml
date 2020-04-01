@@ -12,13 +12,13 @@
 	<groupId>org.asux</groupId>
 	<artifactId>MavenCentralRepo-TopLevelPOM</artifactId>
 
-    <version>3.1.1</version>
+    <version>3.1</version>
 	<packaging>pom</packaging>
 	<!--  The currently-acceptable core packaging values are: pom, jar, maven-plugin, ejb, war, ear, rar, par -->
 
 	<!-- VERSION HISTORY -->
-	<!-- 3.1.1 Added ANTLR Language parser libraries.  Upgraded org.ASUX.common to 1.2; Added org.ASUX.language.ANTLR4 project -->
-	<!-- 3.1 Now all child-POMs will automatically use the last version of this Parent.  Also, org.ASUX.common upgraded to version 1.2 -->
+	<!-- 3.1 Added ANTLR Language parser libraries.  Upgraded org.ASUX.common to 1.2; New org.ASUX.language.ANTLR4 project -->
+	<!--     Now all child-POMs will automatically use the last version of this Parent.  Also, org.ASUX.common upgraded to version 1.2 -->
 	<!-- 3.0 Fixed a big/stupid assumption that somehow the PARENT-POM of this-pom would be somehow getting into Maven-Central.  So, now copying EVERYTHING from parent-pom in here -->
 	<!-- 2.0 Fixed a big mistake in having ALL plugins below (outside of PluginsManagement) have inherited=false -->
 	<!-- 1.0 Never really tested against Sonatype.org. -->
